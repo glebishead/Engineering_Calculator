@@ -1,7 +1,28 @@
 from PyQt5.QtWidgets import QMainWindow
 from ui_files.plotting import Ui_Plotting
 import numpy as np
+from numpy import sin, cos, tan
 from sympy import Symbol, simplify, SympifyError, lambdify
+
+
+def ctg(x):
+	return 1 / tan(x)
+
+
+def asin(x):
+	return 1 / sin(x)
+
+
+def acos(x):
+	return 1 / cos(x)
+
+
+def atan(x):
+	return 1 / tan(x)
+
+
+def actg(x):
+	return 1 / ctg(x)
 
 
 class PlottingWidget(QMainWindow, Ui_Plotting):
@@ -15,7 +36,7 @@ class PlottingWidget(QMainWindow, Ui_Plotting):
 		self.action_6.triggered.connect(self.open_constants)
 		
 		self.expression = '0'
-		self.allowed_values = '0123456789/*-+=()fx'
+		self.allowed_values = '0123456789/*-+=()fx' + ''.join(set('sin cos tan ctg'))
 		self.pushButton.clicked.connect(self.run)
 		self.textEdit.textChanged.connect(self.expression_change)
 	
@@ -36,7 +57,7 @@ class PlottingWidget(QMainWindow, Ui_Plotting):
 			self.eq = lambdify(self.x, self.expression)
 			self.GraphicsView.plot(self.t, self.eq(self.t), pen='b')
 		except Exception as e:
-			print(e)
+			print(e, type(e))
 	
 	def open_engineering_calculator(self):
 		try:
