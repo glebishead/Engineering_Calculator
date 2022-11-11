@@ -2,7 +2,8 @@ from PyQt5.QtWidgets import QMainWindow
 from ui_files.engineering_calculator import Ui_EngineeringCalculatorWidget
 from adapter_code import AdapterDB
 from sqlite3 import OperationalError
-from math import tan, e, pi, sin, cos, tan, asin, acos, atan, log, factorial as fact, radians as rad
+from math import tan, e, pi, asin, acos, atan, log, factorial as fact, radians as rad
+from numpy import sin, cos, tan
 
 
 def ctg(n):
@@ -23,7 +24,7 @@ class EngineeringCalculator(QMainWindow, Ui_EngineeringCalculatorWidget):
 		self.setFixedSize(self.size())
 		self.expression = '0'
 		self.ExpressionLabel.setText(self.expression)
-		self.allowed_values = '0123456789-+*/(),.' + ''.join(set('sin cos tan ctg actg rad log fact abs'))
+		self.allowed_values = '0123456789-+*/(),.' + ''.join(set('sincostanctgactgradlogfactabs'))
 		
 		self.ExpressionLabel.textChanged.connect(self.expression_change)
 		
@@ -85,9 +86,9 @@ class EngineeringCalculator(QMainWindow, Ui_EngineeringCalculatorWidget):
 		# Calculate
 		self.EqualsButton.clicked.connect(self.calculate)
 		
-		self.action_3.triggered.connect(self.open_usual_calculator)
-		self.action_7.triggered.connect(self.open_plotting)
-		self.action_5.triggered.connect(self.open_constants)
+		self.open_common_calc_action.triggered.connect(self.open_usual_calculator)
+		self.open_plotting_action.triggered.connect(self.open_plotting)
+		self.open_ph_const_action.triggered.connect(self.open_constants)
 	
 	def expression_change(self):
 		self.expression = ''.join([*filter(lambda x: x in self.allowed_values, self.ExpressionLabel.toPlainText())])
@@ -232,6 +233,8 @@ class EngineeringCalculator(QMainWindow, Ui_EngineeringCalculatorWidget):
 		try:
 			if self.expression == '0':
 				self.expression = ''
+			elif self.expression == '-0':
+				self.expression = '-'
 			self.ExpressionLabel.setText(self.expression + self.sender().text())
 		except Exception as e:
 			print(e)
@@ -244,7 +247,7 @@ class EngineeringCalculator(QMainWindow, Ui_EngineeringCalculatorWidget):
 	
 	def calculate(self):
 		try:
-			if self.radioButton.isChecked():
+			if self.DegRadioButton.isChecked():
 				if 'sin(rad(' not in self.expression and 'sin(' in self.expression:
 					self.ExpressionLabel.setText(self.expression.replace('sin(', 'sin(rad('))
 				elif 'cos(rad(' not in self.expression and 'cos(' in self.expression:
@@ -253,19 +256,125 @@ class EngineeringCalculator(QMainWindow, Ui_EngineeringCalculatorWidget):
 					self.ExpressionLabel.setText(self.expression.replace('tan(', 'tan(rad('))
 				elif 'ctg(rad(' not in self.expression and 'ctg(' in self.expression:
 					self.ExpressionLabel.setText(self.expression.replace('ctg(', 'ctg(rad('))
-				elif 'asin(rad(' not in self.expression and 'asin(' in self.expression:
-					self.ExpressionLabel.setText(self.expression.replace('asin(', 'asin(rad('))
-				elif 'acos(rad(' not in self.expression and 'acos(' in self.expression:
-					self.ExpressionLabel.setText(self.expression.replace('acos(', 'acos(rad('))
-				elif 'atan(rad(' not in self.expression and 'atan(' in self.expression:
-					self.ExpressionLabel.setText(self.expression.replace('atan(', 'atan(rad('))
-				elif 'actg(rad(' not in self.expression and 'actg(' in self.expression:
-					self.ExpressionLabel.setText(self.expression.replace('actg(', 'actg(rad('))
-			self.expression = ''.join([*filter(lambda x: x in self.allowed_values, self.ExpressionLabel.toPlainText())])
-			self.result = eval(self.expression)
-			self.ResultLabel.setText(f"{self.result}")
+		
+			if 'sin(rad(90))' in self.expression:
+				self.expression = self.expression.replace('sin(rad(90))', '1')
+				self.ExpressionLabel.setText(self.expression)
+			if 'sin(3.141592653589793/2)' in self.expression:
+				self.expression = self.expression.replace('sin(3.141592653589793/2)', '1')
+				self.ExpressionLabel.setText(self.expression)
+			if 'sin(1.5707963267948966)' in self.expression:
+				self.expression = self.expression.replace('sin(1.5707963267948966)', '1')
+				self.ExpressionLabel.setText(self.expression)
+
+			if 'cos(rad(90))' in self.expression:
+				self.expression = self.expression.replace('cos(rad(90))', '0')
+				self.ExpressionLabel.setText(self.expression)
+			if 'cos(3.141592653589793/2)' in self.expression:
+				self.expression = self.expression.replace('cos(3.141592653589793/2)', '0')
+				self.ExpressionLabel.setText(self.expression)
+			if 'cos(1.5707963267948966)' in self.expression:
+				self.expression = self.expression.replace('cos(1.5707963267948966)', '0')
+				self.ExpressionLabel.setText(self.expression)
+			
+			if 'sin(rad(180))' in self.expression:
+				self.expression = self.expression.replace('sin(rad(180))', '0')
+				self.ExpressionLabel.setText(self.expression)
+			if 'sin(3.141592653589793)' in self.expression:
+				self.expression = self.expression.replace('sin(3.141592653589793)', '0')
+				self.ExpressionLabel.setText(self.expression)
+			
+			if 'cos(rad(180))' in self.expression:
+				self.expression = self.expression.replace('cos(rad(180))', '-1')
+				self.ExpressionLabel.setText(self.expression)
+			if 'cos(3.141592653589793)' in self.expression:
+				self.expression = self.expression.replace('cos(3.141592653589793)', '-1')
+				self.ExpressionLabel.setText(self.expression)
+			
+			if 'sin(rad(270))' in self.expression:
+				self.expression = self.expression.replace('sin(rad(270))', '-1')
+				self.ExpressionLabel.setText(self.expression)
+			if 'sin(3*3.141592653589793/2)' in self.expression:
+				self.expression = self.expression.replace('sin(3*3.141592653589793/2)', '-1')
+				self.ExpressionLabel.setText(self.expression)
+			if 'sin(3.141592653589793*3/2)' in self.expression:
+				self.expression = self.expression.replace('sin(3.141592653589793*3/2)', '-1')
+				self.ExpressionLabel.setText(self.expression)
+			if 'sin(3.141592653589793/2*3)' in self.expression:
+				self.expression = self.expression.replace('sin(3.141592653589793/2*3)', '-1')
+				self.ExpressionLabel.setText(self.expression)
+			if 'sin(4.71238898038469)' in self.expression:
+				self.expression = self.expression.replace('sin(4.71238898038469)', '-1')
+				self.ExpressionLabel.setText(self.expression)
+			
+			if 'cos(rad(270))' in self.expression:
+				self.expression = self.expression.replace('cos(rad(270))', '0')
+				self.ExpressionLabel.setText(self.expression)
+			if 'cos(3*3.141592653589793/2)' in self.expression:
+				self.expression = self.expression.replace('cos(3*3.141592653589793/2)', '0')
+				self.ExpressionLabel.setText(self.expression)
+			if 'cos(3.141592653589793*3/2)' in self.expression:
+				self.expression = self.expression.replace('cos(3.141592653589793*3/2)', '0')
+				self.ExpressionLabel.setText(self.expression)
+			if 'cos(3.141592653589793/2*3)' in self.expression:
+				self.expression = self.expression.replace('cos(3.141592653589793/2*3)', '0')
+				self.ExpressionLabel.setText(self.expression)
+			if 'cos(4.71238898038469)' in self.expression:
+				self.expression = self.expression.replace('cos(4.71238898038469)', '0')
+				self.ExpressionLabel.setText(self.expression)
+			
+			if 'sin(rad(360))' in self.expression:
+				self.expression = self.expression.replace('sin(rad(360))', '0')
+				self.ExpressionLabel.setText(self.expression)
+			if 'sin(2*3.141592653589793)' in self.expression:
+				self.expression = self.expression.replace('sin(2*3.141592653589793)', '0')
+				self.ExpressionLabel.setText(self.expression)
+			if 'sin(2*3.141592653589793)' in self.expression:
+				self.expression = self.expression.replace('sin(2*3.141592653589793)', '0')
+				self.ExpressionLabel.setText(self.expression)
+			
+			if 'cos(rad(360))' in self.expression:
+				self.expression = self.expression.replace('cos(rad(360))', '1')
+				self.ExpressionLabel.setText(self.expression)
+			if 'cos(2*3.141592653589793)' in self.expression:
+				self.expression = self.expression.replace('cos(2*3.141592653589793)', '1')
+				self.ExpressionLabel.setText(self.expression)
+			if 'cos(2*3.141592653589793)' in self.expression:
+				self.expression = self.expression.replace('cos(2*3.141592653589793)', '1')
+				self.ExpressionLabel.setText(self.expression)
+			
+			if 'tan(rad(90))' in self.expression or 'tan(rad(270))' in self.expression:
+				self.ExpressionLabel.setText('')
+				self.ResultLabel.setText('Does not exists')
+			
+			if 'ctg(rad(180))' in self.expression or 'ctg(rad(360))' in self.expression:
+				self.ExpressionLabel.setText('')
+				self.ResultLabel.setText('Does not exists')
+			
+			if 'tan(3.141592653589793/2)' in self.expression or 'tan(1.5707963267948966)' in self.expression:
+				self.ExpressionLabel.setText('')
+				self.ResultLabel.setText('Does not exists')
+			
+			if 'tan(3*3.141592653589793/2)' in self.expression or (
+					'tan(3.141592653589793*3/2)' in self.expression) or (
+					'tan(3.141592653589793/2*3)' in self.expression):
+				self.ExpressionLabel.setText('')
+				self.ResultLabel.setText('Does not exists')
+			
+			if 'ctg(3.141592653589793)' in self.expression or (
+					'ctg(2*3.141592653589793)' in self.expression) or (
+					'ctg(3.141592653589793*2)' in self.expression):
+				self.ExpressionLabel.setText('')
+				self.ResultLabel.setText('Does not exists')
+			
+			if self.ResultLabel.toPlainText() != 'Does not exists':
+				self.expression = ''.join(
+					[*filter(lambda x: x in self.allowed_values, self.ExpressionLabel.toPlainText())]
+				)
+				self.result = eval(self.expression)
+				self.ResultLabel.setText(f"{self.result}")
 			try:
-				adapter.add_result(self.expression, self.result)
+				adapter.add_result(self.expression, f'{self.result}')
 			except OperationalError:
 				adapter.add_error("", "Operation error with sql")
 		except ZeroDivisionError:

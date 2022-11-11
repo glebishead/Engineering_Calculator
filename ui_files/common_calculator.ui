@@ -502,26 +502,26 @@ p, li { white-space: pre-wrap; }
      <string>Обычный калькулятор</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="action"/>
+    <addaction name="open_eng_calc_action"/>
     <addaction name="separator"/>
-    <addaction name="action_3"/>
+    <addaction name="open_ph_const_action"/>
     <addaction name="separator"/>
-    <addaction name="action_2"/>
+    <addaction name="open_plotting_action"/>
     <addaction name="separator"/>
    </widget>
    <addaction name="menu"/>
   </widget>
-  <action name="action">
+  <action name="open_eng_calc_action">
    <property name="text">
     <string>Инженерный калькулятор</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="open_plotting_action">
    <property name="text">
     <string>Построение графиков</string>
    </property>
   </action>
-  <action name="action_3">
+  <action name="open_ph_const_action">
    <property name="text">
     <string>Физические величины</string>
    </property>

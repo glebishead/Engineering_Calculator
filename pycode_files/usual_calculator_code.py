@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow
-from ui_files.usual_calculator import Ui_UsualCalculatorWidget
+from ui_files.common_calculator import Ui_UsualCalculatorWidget
 from adapter_code import AdapterDB
 from sqlite3 import OperationalError
 
@@ -53,9 +53,9 @@ class UsualCalculator(QMainWindow, Ui_UsualCalculatorWidget):
 		# Calculate
 		self.EqualsButton.clicked.connect(self.calculate)
 		
-		self.action.triggered.connect(self.open_engineering_calculator)
-		self.action_2.triggered.connect(self.open_plotting)
-		self.action_3.triggered.connect(self.open_constants)
+		self.open_eng_calc_action.triggered.connect(self.open_engineering_calculator)
+		self.open_plotting_action.triggered.connect(self.open_plotting)
+		self.open_ph_const_action.triggered.connect(self.open_constants)
 	
 	def expression_change(self):
 		self.expression = ''.join([
@@ -90,11 +90,11 @@ class UsualCalculator(QMainWindow, Ui_UsualCalculatorWidget):
 	def inverse(self):
 		try:
 			self.expression = ''.join([*filter(lambda x: x in self.allowed_values, self.ExpressionLabel.toPlainText())])
-			self.result = f"{1 / eval(self.expression)}"
+			self.result = f'{1 / eval(self.expression)}'
 			self.ExpressionLabel.setText(self.result)
 			self.ResultLabel.setText(f"{self.result}")
 			try:
-				adapter.add_result(self.expression, self.result)
+				adapter.add_result(self.expression, f'{self.result}')
 			except OperationalError:
 				adapter.add_error("", "Operation error with sql")
 		except ZeroDivisionError:
@@ -146,7 +146,7 @@ class UsualCalculator(QMainWindow, Ui_UsualCalculatorWidget):
 			self.result = eval(self.expression)
 			self.ResultLabel.setText(f"{self.result}")
 			try:
-				adapter.add_result(self.expression, self.result)
+				adapter.add_result(self.expression, f'{self.result}')
 			except OperationalError:
 				adapter.add_error("", "Operation error with sql")
 		except ZeroDivisionError:

@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow
 from ui_files.plotting import Ui_Plotting
-from adapter_code import AdapterDB
+import numpy as np
+from sympy import Symbol, simplify, SympifyError, lambdify
 
 
 class PlottingWidget(QMainWindow, Ui_Plotting):
@@ -8,28 +9,32 @@ class PlottingWidget(QMainWindow, Ui_Plotting):
 		super().__init__()
 		self.setupUi(self)
 		self.setFixedSize(self.size())
+		self.GraphicsView.setBackground('white')
 		self.action_3.triggered.connect(self.open_usual_calculator)
 		self.action_4.triggered.connect(self.open_engineering_calculator)
 		self.action_6.triggered.connect(self.open_constants)
 		
-		self.expression = 'f(x) = x ** 2'
+		self.expression = '0'
 		self.allowed_values = '0123456789/*-+=()fx'
 		self.pushButton.clicked.connect(self.run)
 		self.textEdit.textChanged.connect(self.expression_change)
 	
 	def expression_change(self):
-		self.expression = ''.join([
+		self.expression = "".join([
 			*filter(lambda x: x in self.allowed_values, self.textEdit.toPlainText())
 		])
-		print(self.expression)
 	
 	def run(self):
 		try:
 			self.GraphicsView.clear()
-			self.function = self.expression.replace(' ', '').split('=')[1]
-			# f(x) = 3 * x ** 2
-			self.zeros_func = []
-			self.GraphicsView.plot([i for i in range(10)], [i ** 3 for i in range(10)], pen='b')
+			self.x = Symbol('x')
+			try:
+				self.expression = simplify(self.expression[self.expression.index('=') + 1:])
+			except SympifyError:
+				self.textEdit.setText(f"could not parse {self.expression}")
+			self.t = np.linspace(-20, 20, 30)
+			self.eq = lambdify(self.x, self.expression)
+			self.GraphicsView.plot(self.t, self.eq(self.t), pen='b')
 		except Exception as e:
 			print(e)
 	

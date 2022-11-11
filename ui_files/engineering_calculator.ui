@@ -813,7 +813,7 @@ p, li { white-space: pre-wrap; }
      <string>In</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton">
+   <widget class="QRadioButton" name="DegRadioButton">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -826,7 +826,7 @@ p, li { white-space: pre-wrap; }
      <string>Deg</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_2">
+   <widget class="QRadioButton" name="RadRadioButton">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -854,27 +854,27 @@ p, li { white-space: pre-wrap; }
      <string>Инженерный калькулятор</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="action_3"/>
+    <addaction name="open_common_calc_action"/>
     <addaction name="separator"/>
-    <addaction name="action_5"/>
+    <addaction name="open_ph_const_action"/>
     <addaction name="separator"/>
-    <addaction name="action_7"/>
+    <addaction name="open_plotting_action"/>
     <addaction name="separator"/>
    </widget>
    <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="action_3">
+  <action name="open_common_calc_action">
    <property name="text">
     <string>Обычный калькулятор</string>
    </property>
   </action>
-  <action name="action_5">
+  <action name="open_ph_const_action">
    <property name="text">
     <string>Физические величины</string>
    </property>
   </action>
-  <action name="action_7">
+  <action name="open_plotting_action">
    <property name="text">
     <string>Построение графиков</string>
    </property>
