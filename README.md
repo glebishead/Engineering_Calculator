@@ -5,3 +5,4 @@ Unfortunately, the hyperbola graph is very different from the usual one.
 
 When calculating trigonometric expressions, 
 an inaccuracy occurs. This is due to the inability to determine the exact value of pi, we use rounding to 15 decimal places.
+And also graph of some functions shows strange.
