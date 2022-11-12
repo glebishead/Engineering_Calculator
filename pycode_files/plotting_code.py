@@ -53,7 +53,8 @@ class PlottingWidget(QMainWindow, Ui_Plotting):
 				self.expression = simplify(self.expression[self.expression.index('=') + 1:])
 			except SympifyError:
 				self.textEdit.setText(f"could not parse {self.expression}")
-			self.t = np.linspace(-20, 20, 30)
+			self.t = np.linspace(-50, 50, 300)
+			# the interval from n1 to n2, the number of points
 			self.eq = lambdify(self.x, self.expression)
 			self.GraphicsView.plot(self.t, self.eq(self.t), pen='b')
 		except Exception as e:
